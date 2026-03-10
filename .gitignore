@@ -1,0 +1,61 @@
+## Serilog e Logs de aplicação
+*.log
+
+## Pastas de Compilação (Binários)
+[Bb]in/
+[Oo]bj/
+
+## Visual Studio
+.vs/
+*.user
+*.userosscache
+*.sln.docstates
+
+## Visual Studio Code
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+
+## Arquivos de Configuração de Usuário (Secrets)
+# Ignora arquivos que podem conter senhas ou chaves locais
+appsettings.Development.json
+# Se você usar UserSecrets do .NET, eles ficam fora da pasta do projeto, 
+# mas se colocar aqui dentro, ignore-os:
+secrets.json
+
+## Pacotes NuGet
+*.nupkg
+# A pasta de pacotes costuma ser global, mas se estiver no projeto:
+packages/
+*.nuget.props
+*.nuget.targets
+
+## Publicação / Publish
+publish/
+*.azurepubxml
+*.pubxml
+
+## Ferramentas de Teste e Cobertura
+TestResults/
+*.sequencedist
+*.coverage
+*.opencoverxml
+
+## Rider / JetBrains
+.idea/
+*.sln.iml
+
+## Docker
+.dockerignore
+obj/Docker/
+
+## Cache de SO
+.DS_Store
+Thumbs.db
+
+## Arquivos Temporários
+*.tmp
+*.temp

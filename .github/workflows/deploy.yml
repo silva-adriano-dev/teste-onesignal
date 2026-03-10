@@ -1,0 +1,47 @@
+name: Build and Deploy Docker to VPS
+
+on:
+  push:
+    branches:
+    - main # branch de produção
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: 🔄 Checkout do código
+      uses: actions/checkout@v3
+
+    # ===== WEBAPI =====
+    - name: 🐳 Build imagem trackingrealtime
+      run: docker build -t trackingrealtime -f Dockerfile .
+
+    - name: 📦 Exportar imagem trackingrealtime
+      run: docker save trackingrealtime > trackingrealtime.tar
+
+    # ===== COPIAR TODAS PARA VPS =====
+    - name: 🔐 Copiar imagens para VPS via SCP
+      uses: appleboy/scp-action@v0.1.4
+      with:
+        host: ${{ secrets.VPS_HOST }}
+        username: ${{ secrets.VPS_USER }}
+        key: ${{ secrets.VPS_SSH_KEY }}
+        port: ${{ secrets.VPS_PORT || 22 }}
+        source: "*.tar"
+        target: ~/trackingrealtimep/
+
+    # ===== DEPLOY NA VPS =====
+    - name: 🚀 Rodar docker load e containers na VPS
+      uses: appleboy/ssh-action@v1.0.0
+      with:
+        host: ${{ secrets.VPS_HOST }}
+        username: ${{ secrets.VPS_USER }}
+        key: ${{ secrets.VPS_SSH_KEY }}
+        port: ${{ secrets.VPS_PORT || 22 }}
+        script: |
+          # WebAPI
+          docker load < ~/trackingrealtimep/trackingrealtime.tar
+          docker stop trackingrealtimep || true
+          docker rm trackingrealtimep || true
+          docker run -d -p 9090:8080 --name trackingrealtimep --network poker_proxy trackingrealtime
